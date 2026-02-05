@@ -224,7 +224,7 @@ bot = MyBot()
 async def verify_cmd(interaction: Interaction):
     embed = discord.Embed(
         title="Verification", 
-        description="### 下のボタンを押して認証してください。\n\n認証後規約に同意したと判断します。", 
+        description="### 下のボタンを押して認証してください。\n\n認証後[利用規約](https://ptb.discord.com/channels/1313077923741438004/1313097431508058153)に同意したと判断します。", 
         color=discord.Color.from_rgb(43, 45, 49)
     )
     embed.set_image(url=IMAGE_URL)
