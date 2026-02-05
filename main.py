@@ -5,9 +5,11 @@ from flask import Flask
 from threading import Thread
 from discord import ui, Interaction, app_commands
 from config import (
-    TOKEN, ADMIN_ROLE_ID, TICKET_CATEGORY_ID, ADMIN_GET_ROLE, 
+    ADMIN_ROLE_ID, TICKET_CATEGORY_ID, ADMIN_GET_ROLE, 
     DONE_CATEGORY_ID, VERIFY_ROLE_ID, EMOJI_ID, IMAGE_URL
 )
+
+TOKEN = os.getenv("TOKEN")
 
 app = Flask('')
 
@@ -120,11 +122,11 @@ class TicketCloseButton(ui.Button):
                 await interaction.channel.edit(category=done_category)
                 await interaction.followup.send("対応済みに移動しました。", ephemeral=True)
             else:
-                embed = discord.Embed(title="Error", description="対応済みカテゴリーが満杯です。手動で削除してください。", color=discord.Color.red())
+                embed = discord.Embed(title="Error", description="対応済みカテゴリーが満杯です。", color=discord.Color.red())
                 embed.set_author(name="System", icon_url="https://i.postimg.cc/CxyfBNQ1/35112-error11.png")
                 await interaction.followup.send(embed=embed, ephemeral=True)
         else:
-            await interaction.followup.send("対応済み設定を完了しました（移動先カテゴリ未設定）。", ephemeral=True)
+            await interaction.followup.send("移動先カテゴリが見つかりません。", ephemeral=True)
 
 class TicketView(ui.View):
     def __init__(self):
@@ -151,7 +153,7 @@ class TicketPanelSelect(ui.Select):
     async def callback(self, interaction: Interaction):
         category = interaction.guild.get_channel(TICKET_CATEGORY_ID)
         if not category or len(category.channels) >= 50:
-            embed = discord.Embed(title="Error", description="カテゴリーが見つからないか、満杯で作成できません。", color=discord.Color.red())
+            embed = discord.Embed(title="Error", description="カテゴリーが満杯か存在しません。", color=discord.Color.red())
             embed.set_author(name="System", icon_url="https://i.postimg.cc/CxyfBNQ1/35112-error11.png")
             return await interaction.response.send_message(embed=embed, ephemeral=True)
             
@@ -222,7 +224,7 @@ bot = MyBot()
 async def verify_cmd(interaction: Interaction):
     embed = discord.Embed(
         title="Verification", 
-        description="### 下のボタンを押して認証してください。\n\n認証後 https://discord.com/channels/1313077923741438004/1313097431508058153 に同意したと判断します。", 
+        description="### 下のボタンを押して認証してください。\n\n認証後規約に同意したと判断します。", 
         color=discord.Color.from_rgb(43, 45, 49)
     )
     embed.set_image(url=IMAGE_URL)
